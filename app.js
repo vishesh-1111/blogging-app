@@ -5,7 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const {VerifyUser} = require('./middlewares/authentication')
-const port =  process.env.PORT
+const port = process.env.PORT || 3000;
 const {blog} = require('./models/blog');
 const UserRouter= require('./routes/user');
 const {BlogRouter}= require('./routes/blog');
@@ -35,7 +35,4 @@ app.get('/',async(req,res)=>{
         });   
 });
 
-
-app.listen(port,()=>{
-    console.log(`Port running at ${port} .`);
-})
+module.exports = app;
