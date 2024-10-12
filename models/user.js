@@ -41,8 +41,6 @@ UserSchema.pre('save',function(next){
 
     this.salt= salt;
     this.hash= hash;    
-
-    console.log(this);
     next();
 })
 const User=mongoose.model('user',UserSchema);

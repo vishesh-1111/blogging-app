@@ -38,9 +38,8 @@ UserRouter
     .update(password)
     .digest('hex');
     if(hash===user.hash){
-     // console.log(user,'from route');
+  
       const payload = user.toObject();
-//      console.log(payload,'from route');
       var token = jwt.sign(payload, 'secret'); 
       return res.cookie('token',token).redirect('/');
     }

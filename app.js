@@ -13,10 +13,11 @@ const CommentRouter = require('./routes/comment');
 app.set('view engine','ejs');
 app.set("views", path.join(__dirname, "views"));
 app.use(cookieParser());
+app.use(express.static('public'));
 app.use(express.urlencoded({extended :false}));
 app.use(VerifyUser);
 
-mongoose.connect(`${process.env.MONGO_URL}`).then((res)=>{
+mongoose.connect(`${process.env.MONGO_URL1}`).then((res)=>{
     console.log('Mongodb connected !!');
 });
 
