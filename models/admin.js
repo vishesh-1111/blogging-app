@@ -2,7 +2,7 @@ const mongoose =require('mongoose');
 const { createHmac,randomBytes } = require('node:crypto');
 
 
-const UserSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
     name : {
         type : String,
         required : true
@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user' 
+        default: 'admin' 
     },
     salt : {
         type : String,
@@ -30,11 +30,10 @@ const UserSchema = new mongoose.Schema({
         type : String,
         required : false,
     },
-    
      
 })
 
-UserSchema.pre('save',function(next){
+adminSchema.pre('save',function(next){
    const pwd = this.password;
    const salt = randomBytes(16).toString('hex');
 
@@ -46,9 +45,9 @@ UserSchema.pre('save',function(next){
     this.hash= hash;    
     next();
 })
-const User=mongoose.model('user',UserSchema);
+const admin=mongoose.model('admin',adminSchema);
 
 
 module.exports={
-    User,
+    admin,
 }

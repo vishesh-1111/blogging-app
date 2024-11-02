@@ -1,38 +1,26 @@
-require('dotenv').config()
-const express =require('express');
-const app =express();
-const path = require('path');
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const {VerifyUser} = require('./middlewares/authentication')
-const port = process.env.PORT || 3000;
-const {blog} = require('./models/blog');
-const UserRouter= require('./routes/user');
-const {BlogRouter}= require('./routes/blog');
-const CommentRouter = require('./routes/comment');
-app.set('view engine','ejs');
-app.set("views", path.join(__dirname, "views"));
-app.use(cookieParser());
-app.use(express.static('public'));
-app.use(express.urlencoded({extended :false}));
-app.use(VerifyUser);
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const dburl='mongodb://127.0.0.1:27017/db7';
+const userrouter = require('./routes/user');
+const adminrouter = require('./routes/admin');
+const { eventRouter } = require('./routes/event');
+const { isUser, isAdmin } = require('./middlewares/authentication');
+const {connectDB} = require('./mongodb/connection');
+const app = express();
+const PORT = 5000;
 
-mongoose.connect(`${process.env.MONGO_URL1}`).then((res)=>{
-    console.log('Mongodb connected !!');
+connectDB(dburl);
+
+app.use(cors()); 
+app.use(bodyParser.json()); 
+
+
+
+app.use('/user',isUser,userrouter);
+app.use('/admin',isAdmin, adminrouter);
+app.use('/events',eventRouter);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-app.use('/users',UserRouter);
-app.use('/blog',BlogRouter);
-app.use('/comment',CommentRouter);
-
-
-app.get('/',async(req,res)=>{
-     const allblogs=await blog.find({});
-
-     return res.render('home',{
-            user : req.user,
-            blogs : allblogs,
-        });   
-});
-
-module.exports = app;
